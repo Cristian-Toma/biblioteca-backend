@@ -6,24 +6,30 @@ var api = express.Router();
 var mdAuth = require("../middlewares/authenticated");
 
 api.post("/login", adminController.login);
+
+/*USUARIOS*/
 api.post("/saveUser", adminController.saveUser);
 api.get("/searchUser", mdAuth.ensureAuthAdmin, adminController.searchUser);
 api.get("/listUsers", mdAuth.ensureAuthAdmin, adminController.listUsers);
-api.put("/updateUser/:id", mdAuth.ensureAuthAdmin, adminController.updateUser);
+api.post("/updateUser/:id", mdAuth.ensureAuthAdmin, adminController.updateUser);
 api.delete(
   "/removeUser/:id",
   mdAuth.ensureAuthAdmin,
   adminController.removeUser
 );
+
+/*LIBROS*/
 api.post("/saveBook", mdAuth.ensureAuthAdmin, adminController.saveBook);
-api.get("/searchBook", mdAuth.ensureAuthAdmin, adminController.searchBook);
+api.post("/searchBook", mdAuth.ensureAuthAdmin, adminController.searchBook);
 api.get("/listBook", mdAuth.ensureAuthAdmin, adminController.listBooks);
-api.put("/updateBook/:id", mdAuth.ensureAuthAdmin, adminController.updateBook);
+api.post("/updateBook/:id", mdAuth.ensureAuthAdmin, adminController.updateBook);
 api.delete(
   "/removeBook/:id",
   mdAuth.ensureAuthAdmin,
   adminController.removeBook
 );
+
+/*REVISTAS*/
 api.post("/saveMagazine", mdAuth.ensureAuthAdmin, adminController.saveMagazine);
 api.get(
   "/searchMagazine",
@@ -31,7 +37,7 @@ api.get(
   adminController.searchMagazine
 );
 api.get("/listMagazine", mdAuth.ensureAuthAdmin, adminController.listMagazines);
-api.put(
+api.post(
   "/updateMagazine/:id",
   mdAuth.ensureAuthAdmin,
   adminController.updateMagazine

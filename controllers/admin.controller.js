@@ -18,8 +18,8 @@ function saveUser(req, res) {
       } else {
         user.carnetCui = params.carnetCui;
         user.name = params.name;
-        user.username = params.lastname;
-        user.role = "ADMIN";
+        user.lastname = params.lastname;
+        user.role = "USER";
 
         bcrypt.hash(params.password, null, null, (err, passwordHash) => {
           if (err) {
@@ -54,7 +54,7 @@ function listUsers(req, res) {
     if (err) {
       res.status(500).send({ message: "Error general" });
     } else if (users) {
-      res.send({ users: users });
+      res.send({ data: users });
     } else {
       res.status(418).send({ message: "No hay registros" });
     }
@@ -65,7 +65,7 @@ function searchUser(req, res) {
   var params = req.body;
 
   if (params.search) {
-    Carer.find({ $or: [{ carnetCui: params.search }] }, (err, userFind) => {
+    User.find({ $or: [{ carnetCui: params.search }] }, (err, userFind) => {
       if (err) {
         res.status(500).send({ message: "Error general" });
       } else if (userFind) {
@@ -83,45 +83,32 @@ function updateUser(req, res) {
   var userId = req.params.id;
   var update = req.body;
 
-  if (userId != req.user.sub) {
-    res.status(403).send({ message: "No tienes acceso a esta ruta" });
-  } else {
-    User.findByIdAndUpdate(
-      userId,
-      update,
-      { new: true },
-      (err, userUpdated) => {
-        if (err) {
-          res.status(500).send({ message: "Error general al actualizar" });
-        } else if (userUpdated) {
-          res.send({ user: userUpdated });
-        } else {
-          res.status(404).send({ message: "No se ha podido actualizar" });
-        }
-      }
-    );
-  }
+  User.findByIdAndUpdate(userId, update, { new: true }, (err, userUpdated) => {
+    if (err) {
+      res.status(500).send({ message: "Error general al actualizar" });
+    } else if (userUpdated) {
+      res.send({ user: true });
+    } else {
+      res.status(404).send({ message: "No se ha podido actualizar" });
+    }
+  });
 }
 
 function removeUser(req, res) {
   var userId = req.params.id;
 
-  if (userId != req.user.sub) {
-    res.status(403).send({ message: "Error de permisos, usuario no logeado" });
-  } else {
-    User.findByIdAndRemove(userId, (err, userRemoved) => {
-      if (err) {
-        res.status(500).send({ message: "Error general al actualizar" });
-      } else if (userRemoved) {
-        res.send({
-          message: "Se ha eliminado al siguiente usuario: ",
-          user: userRemoved,
-        });
-      } else {
-        res.status(404).send({ message: "No se ha podido eliminar" });
-      }
-    });
-  }
+  User.findByIdAndRemove(userId, (err, userRemoved) => {
+    if (err) {
+      res.status(500).send({ message: "Error general al actualizar" });
+    } else if (userRemoved) {
+      res.send({
+        message: "Se ha eliminado al siguiente usuario: ",
+        user: true,
+      });
+    } else {
+      res.status(404).send({ message: "No se ha podido eliminar" });
+    }
+  });
 }
 
 function saveBook(req, res) {
@@ -201,50 +188,35 @@ function searchBook(req, res) {
 }
 
 function updateBook(req, res) {
-  var userId = req.params.id;
   var update = req.body;
   var bookId = req.params.id;
 
-  if (userId != req.user.sub) {
-    res.status(403).send({ message: "No tienes acceso a esta ruta" });
-  } else {
-    Book.findByIdAndUpdate(
-      bookId,
-      update,
-      { new: true },
-      (err, bookUpdated) => {
-        if (err) {
-          res.status(500).send({ message: "Error general al actualizar" });
-        } else if (bookUpdated) {
-          res.send({ book: bookUpdated });
-        } else {
-          res.status(404).send({ message: "No se ha podido actualizar" });
-        }
-      }
-    );
-  }
+  Book.findByIdAndUpdate(bookId, update, { new: true }, (err, bookUpdated) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send({ message: "Error general al actualizar" });
+    } else if (bookUpdated) {
+      res.send({ book: true });
+    } else {
+      res.status(404).send({ message: "No se ha podido actualizar" });
+    }
+  });
 }
 
 function removeBook(req, res) {
-  var userId = req.params.id;
   var bookId = req.params.id;
 
-  if (userId != req.user.sub) {
-    res.status(403).send({ message: "Error de permisos, usuario no logeado" });
-  } else {
-    Book.findByIdAndRemove(bookId, (err, bookRemoved) => {
-      if (err) {
-        res.status(500).send({ message: "Error general al actualizar" });
-      } else if (bookRemoved) {
-        res.send({
-          message: "Se ha eliminado al siguiente libro: ",
-          book: bookRemoved,
-        });
-      } else {
-        res.status(404).send({ message: "No se ha podido eliminar" });
-      }
-    });
-  }
+  Book.findByIdAndRemove(bookId, (err, bookRemoved) => {
+    if (err) {
+      res.status(500).send({ message: "Error general al actualizar" });
+    } else if (bookRemoved) {
+      res.send({
+        book: true,
+      });
+    } else {
+      res.status(404).send({ message: "No se ha podido eliminar" });
+    }
+  });
 }
 
 function saveMagazine(req, res) {
@@ -289,11 +261,11 @@ function saveMagazine(req, res) {
 }
 
 function listMagazines(req, res) {
-  magazine.find({}, (err, magazines) => {
+  Magazine.find({}, (err, magazines) => {
     if (err) {
       res.status(500).send({ message: "Error general" });
     } else if (magazines) {
-      res.send({ magazines: magazines });
+      res.send({ data: magazines });
     } else {
       res.status(418).send({ message: "No hay registros" });
     }
@@ -328,50 +300,39 @@ function searchMagazine(req, res) {
 }
 
 function updateMagazine(req, res) {
-  var userId = req.params.id;
   var update = req.body;
   var magazineId = req.params.id;
 
-  if (userId != req.user.sub) {
-    res.status(403).send({ message: "No tienes acceso a esta ruta" });
-  } else {
-    Magazine.findByIdAndUpdate(
-      magazineId,
-      update,
-      { new: true },
-      (err, MagazineUpdated) => {
-        if (err) {
-          res.status(500).send({ message: "Error general al actualizar" });
-        } else if (bookUpdated) {
-          res.send({ book: bookUpdated });
-        } else {
-          res.status(404).send({ message: "No se ha podido actualizar" });
-        }
+  Magazine.findByIdAndUpdate(
+    magazineId,
+    update,
+    { new: true },
+    (err, MagazineUpdated) => {
+      if (err) {
+        res.status(500).send({ message: "Error general al actualizar" });
+      } else if (MagazineUpdated) {
+        res.send({ magazine: true });
+      } else {
+        res.status(404).send({ message: "No se ha podido actualizar" });
       }
-    );
-  }
+    }
+  );
 }
 
 function removeMagazine(req, res) {
-  var userId = req.params.id;
   var magazineId = req.params.id;
 
-  if (userId != req.user.sub) {
-    res.status(403).send({ message: "Error de permisos, usuario no logeado" });
-  } else {
-    Magazine.findByIdAndRemove(bookId, (err, magazineRemoved) => {
-      if (err) {
-        res.status(500).send({ message: "Error general al actualizar" });
-      } else if (magazineRemoved) {
-        res.send({
-          message: "Se ha eliminado la siguiente revista: ",
-          Magazine: magazineRemoved,
-        });
-      } else {
-        res.status(404).send({ message: "No se ha podido eliminar" });
-      }
-    });
-  }
+  Magazine.findByIdAndRemove(magazineId, (err, magazineRemoved) => {
+    if (err) {
+      res.status(500).send({ message: "Error general al actualizar" });
+    } else if (magazineRemoved) {
+      res.send({
+        magazine: true,
+      });
+    } else {
+      res.status(404).send({ message: "No se ha podido eliminar" });
+    }
+  });
 }
 
 function login(req, res) {
@@ -420,6 +381,47 @@ function login(req, res) {
   }
 }
 
+function saveAdmin(req, res) {
+  var user = new User();
+
+  User.findOne({ $or: [{ username: user.carnetCui }] }, (err, userFind) => {
+    if (err) {
+      console.log(err);
+    } else if (userFind) {
+      console.log("ADMIN ya creado");
+    } else {
+      user.carnetCui = "ADMIN";
+      user.name = "ADMIN";
+      user.lastname = "ADMIN";
+      user.role = "ADMIN";
+
+      bcrypt.hash(
+        (user.password = "ADMIN"),
+        null,
+        null,
+        (err, passwordHash) => {
+          if (err) {
+            res.status(500).send({ message: "Error al encriptar contraseña" });
+          } else if (passwordHash) {
+            user.password = passwordHash;
+
+            user.save((err, userSaved) => {
+              if (err) {
+                return handleError(err);
+              }
+              if (userSaved) {
+                console.log("ADMIN creado exitosamente");
+              }
+            });
+          } else {
+            res.status(418).send({ message: "Error inesperado" });
+          }
+        }
+      );
+    }
+  });
+}
+
 module.exports = {
   saveBook,
   saveMagazine,
@@ -437,4 +439,5 @@ module.exports = {
   removeBook,
   removeMagazine,
   login,
+  saveAdmin,
 };
