@@ -8,10 +8,10 @@ var mdAuth = require("../middlewares/authenticated");
 api.post("/login", adminController.login);
 
 /*USUARIOS*/
-api.post("/saveUser", adminController.saveUser);
+api.post("/saveUser", mdAuth.ensureAuthAdmin, adminController.saveUser);
 api.get("/searchUser", mdAuth.ensureAuthAdmin, adminController.searchUser);
 api.get("/listUsers", mdAuth.ensureAuthAdmin, adminController.listUsers);
-api.post("/updateUser/:id", mdAuth.ensureAuthAdmin, adminController.updateUser);
+api.put("/updateUser/:id", mdAuth.ensureAuthAdmin, adminController.updateUser);
 api.delete(
   "/removeUser/:id",
   mdAuth.ensureAuthAdmin,
@@ -22,7 +22,7 @@ api.delete(
 api.post("/saveBook", mdAuth.ensureAuthAdmin, adminController.saveBook);
 api.post("/searchBook", mdAuth.ensureAuthAdmin, adminController.searchBook);
 api.get("/listBook", mdAuth.ensureAuthAdmin, adminController.listBooks);
-api.post("/updateBook/:id", mdAuth.ensureAuthAdmin, adminController.updateBook);
+api.put("/updateBook/:id", mdAuth.ensureAuthAdmin, adminController.updateBook);
 api.delete(
   "/removeBook/:id",
   mdAuth.ensureAuthAdmin,
@@ -37,7 +37,7 @@ api.get(
   adminController.searchMagazine
 );
 api.get("/listMagazine", mdAuth.ensureAuthAdmin, adminController.listMagazines);
-api.post(
+api.put(
   "/updateMagazine/:id",
   mdAuth.ensureAuthAdmin,
   adminController.updateMagazine

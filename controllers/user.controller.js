@@ -1,6 +1,8 @@
 "use strict";
 
 var User = require("../models/user.model");
+var Magazine = require("../models/magazine.model");
+var Book = require("../models/book.model");
 var bcrypt = require("bcrypt-nodejs");
 var jwt = require("../services/jwt");
 
@@ -53,6 +55,44 @@ function login(req, res) {
   }
 }
 
+function listBooks(req, res) {
+  Book.find({}, (err, books) => {
+    if (err) {
+      res.status(500).send({ message: "Error general" });
+    } else if (books) {
+      res.send({ data: books });
+    } else {
+      res.status(418).send({ message: "No hay registros" });
+    }
+  });
+}
+
+function listBooks(req, res) {
+  Book.find({}, (err, books) => {
+    if (err) {
+      res.status(500).send({ message: "Error general" });
+    } else if (books) {
+      res.send({ data: books });
+    } else {
+      res.status(418).send({ message: "No hay registros" });
+    }
+  });
+}
+
+function listMagazines(req, res) {
+  Magazine.find({}, (err, magazines) => {
+    if (err) {
+      res.status(500).send({ message: "Error general" });
+    } else if (magazines) {
+      res.send({ data: magazines });
+    } else {
+      res.status(418).send({ message: "No hay registros" });
+    }
+  });
+}
+
 module.exports = {
   login,
+  listBooks,
+  listMagazines,
 };
