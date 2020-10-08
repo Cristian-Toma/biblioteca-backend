@@ -6,7 +6,7 @@ var api = express.Router();
 var mdAuth = require("../middlewares/authenticated");
 
 api.post("/login", userController.login);
-api.post("/lisBook", userController.listBooks, mdAuth.ensureAuth);
-api.post("/listMagazine", userController.listMagazines, mdAuth.ensureAuth);
+api.get("/listBook", userController.listBooks, mdAuth.ensureAuth);
+api.get("/listMagazine", userController.listMagazines, mdAuth.ensureAuth);
 
 module.exports = api;

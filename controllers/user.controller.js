@@ -67,18 +67,6 @@ function listBooks(req, res) {
   });
 }
 
-function listBooks(req, res) {
-  Book.find({}, (err, books) => {
-    if (err) {
-      res.status(500).send({ message: "Error general" });
-    } else if (books) {
-      res.send({ data: books });
-    } else {
-      res.status(418).send({ message: "No hay registros" });
-    }
-  });
-}
-
 function listMagazines(req, res) {
   Magazine.find({}, (err, magazines) => {
     if (err) {
